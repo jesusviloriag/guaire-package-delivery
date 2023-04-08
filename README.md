@@ -1,5 +1,5 @@
 # global-recipes-traditions-app
-A React Native App for making and sharing global recipes with GPS and text recognition
+A React Native Package Delivery App 
 
 ![alt text](https://i.imgur.com/b3REzkk.png) ![alt text](https://i.imgur.com/QsDMb8s.png)
 
