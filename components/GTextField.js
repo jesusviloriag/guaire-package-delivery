@@ -23,7 +23,7 @@ import {
 
 import { useEffect, useState } from 'react';
 
-function GButton({ value, placeholder, secureTextEntry, label }): JSX.Element {
+function GButton({ value, placeholder, secureTextEntry, label, onChangeText }): JSX.Element {
 
   useEffect(() => {
     
@@ -49,7 +49,7 @@ function GButton({ value, placeholder, secureTextEntry, label }): JSX.Element {
 
       <TextInput
         editable
-        onChangeText={text => setPassword(text)}
+        onChangeText={onChangeText}
         secureTextEntry={secureTextEntry} 
         placeholder={placeholder}
         value={value}

@@ -22,8 +22,17 @@ class GuairePackageDelivery {
         }
     }
 
-    static login(username, password) {
+    static async login(username, password) {
         var _this = this;
+
+        let account = {
+            username
+        }
+
+        this.account = account;
+
+        return true;
+
         console.log(backendUrl + "authenticate");
         return fetch(backendUrl + "authenticate", {
             method: 'POST',
@@ -80,9 +89,23 @@ class GuairePackageDelivery {
             });
     }
 
-    static register(username, password, email) {
+    static async register(login, password, email, isCustomer) {
 
-        return fetch(backendUrl + "register", {
+        let _this = this;
+        let user = {
+            login: login,
+            email: email,
+            isCustomer: isCustomer
+        }
+
+        AsyncStorage.setItem("@userstore:user", JSON.stringify(user))
+
+        _this.instance.user = user;
+
+        return true;
+        
+
+        /*return fetch(backendUrl + "register", {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -117,7 +140,7 @@ class GuairePackageDelivery {
                     type: 'backend',
                     message: error
                 }
-            });
+            });*/
     }
 
     static account(token){
@@ -280,6 +303,29 @@ class GuairePackageDeliveryService {
         AsyncStorage.removeItem("@userstore:user");
         AsyncStorage.removeItem("@userstore:token");
         AsyncStorage.removeItem("@recipestore:recipe");
+        return true;
+    }
+
+    async addDriverDetails(model, make, year, color, firstName, lastName, DOB, address) {
+        let user = this.user
+        
+        user = {
+            ...user,
+            model,
+            make,
+            year,
+            color,
+            firstName,
+            lastName,
+            DOB,
+            address,
+            filledDetails: true
+        }
+
+        this.user = user;
+
+        AsyncStorage.setItem("@userstore:user", JSON.stringify(user));
+
         return true;
     }
 }

@@ -15,19 +15,41 @@ import {
   useColorScheme,
   View,
   Image,
-  Dimensions
+  Dimensions,
+  LogBox
 } from 'react-native';
 
 import { useEffect, useState } from 'react';
 
+import MapboxGL from "@rnmapbox/maps";
+
 import GuairePackageDelivery from '../components/GuairePackageDelivery';
+
+import { CommonActions } from '@react-navigation/native';
 
 function SplashScreen({ navigation }): JSX.Element {
 
   const navigateToNextScreen = () => {
     setTimeout( () => {
-      if(GuairePackageDelivery.instance.user) {
-        navigation.navigate("Home")
+      let user = GuairePackageDelivery.instance.user;
+      if(user) {
+        if (user.filledDetails) {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 1,
+              routes: [
+                { name: 'Home' }
+              ],
+            })
+          );
+          //navigation.navigate("Home")
+        } else {
+          if (!user.isCustomer) {
+            navigation.navigate("DriversInfo")
+          } else {
+            navigation.navigate("CustomersInfo")
+          }          
+        }
       } else {
         navigation.navigate("Login")
       }     
@@ -35,6 +57,11 @@ function SplashScreen({ navigation }): JSX.Element {
   }
 
   useEffect(() => {
+    LogBox.ignoreAllLogs(); //Ignore all log notifications
+    MapboxGL.setWellKnownTileServer('Mapbox');
+    MapboxGL.setAccessToken("<YOUR TOKEN>");
+    MapboxGL.setConnected(true);
+    MapboxGL.setTelemetryEnabled(false);
     navigateToNextScreen();
     GuairePackageDelivery.init();
   }, []);

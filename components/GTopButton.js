@@ -23,7 +23,7 @@ import {
 
 import { useEffect, useState } from 'react';
 
-function GButton({ selected, onPress, text }): JSX.Element {
+function GButton({ selected, onPress, text, textStyle }): JSX.Element {
 
   useEffect(() => {
     
@@ -45,9 +45,18 @@ function GButton({ selected, onPress, text }): JSX.Element {
         justifyContent: 'center',
         alignItems: 'center'
       }}>
-        <Text style={{
-          color: selected ? 'black' : 'white'
-        }}>{text}</Text>
+        <Text style={[{
+          color: selected ? 'black' : 'white',
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 6,
+          },
+          shadowOpacity: 0.50,
+          shadowRadius: 3.84,
+
+          elevation: 5,
+        }, textStyle]}>{text}</Text>
       </View>
     </TouchableHighlight>   
   );

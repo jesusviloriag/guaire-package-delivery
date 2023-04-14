@@ -19,8 +19,12 @@ import {
   TextInput,
   TouchableOpacity,
   Button,
-  FlatList
+  FlatList,
 } from 'react-native';
+
+import Geolocation from '@react-native-community/geolocation';
+
+import MapboxGL, {Camera} from "@rnmapbox/maps";
 
 import { useEffect, useState } from 'react';
 
@@ -29,10 +33,36 @@ import GuairePackageDelivery from '../components/GuairePackageDelivery';
 function Home({ navigation }): JSX.Element {
 
   const [recipes, setRecipes] = React.useState('');
+  const [isMapInitialized, setMapInitialized] = React.useState(false);
+  const [isGLSurfaceView , setGLSurfaceView ] = React.useState(false);
+  const [coords, setCoords] = React.useState([0.0, 0.0]);
+  const camera = React.useState<Camera>(null);
 
   useEffect(() => {
     GuairePackageDelivery.init();
+    initializeCoordinates();
   }, []);
+
+  const initializeCoordinates = () => {
+    Geolocation.getCurrentPosition(
+      //Will give you the current location
+      (position) => {
+        //getting the Longitude from the location json
+
+        console.log(position);     
+        setCoords([position.coords.longitude, position.coords.latitude]) 
+        if(coords) {
+          setMapInitialized(true);
+          camera.current?.zoomTo(5, 100);
+        } else {
+          alert("Could not get your location... please enable location services")
+        }
+          
+       }, (error) => alert(error.message), { 
+         enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 
+       }
+    );
+  }
 
   const createNewRecipe = () => {
     navigation.navigate("NewRecipe");
@@ -48,24 +78,55 @@ function Home({ navigation }): JSX.Element {
 
   }, [navigation]);
 
+  const showMap = () => {
+    if (isMapInitialized) {
+      return(
+        <MapboxGL.MapView 
+          styleURL={
+            !isGLSurfaceView
+              ? MapboxGL.StyleURL.Satellite
+              : MapboxGL.StyleURL.Street
+          }
+
+          localizeLabels={true}
+          attributionEnabled={false}
+          compassEnabled={true}
+          logoEnabled={true}
+
+          style={{
+            flex: 1
+          }}>
+            <Camera
+              ref={camera} 
+              maxZoomLevel={14}
+              minZoomLevel={11}
+              centerCoordinate={coords}
+            />
+          </MapboxGL.MapView>
+      )
+    } else {
+      return null;
+    }
+  }
+
   return (
-    <SafeAreaView>
+    <View style={styles.mainContainer}>
+      {showMap()}
       <TouchableOpacity 
         onPress={() => {createNewRecipe()}}
         style={{
           position: 'absolute',
-          bottom: 25,
-          right: 15,
+          bottom: 10,
+          marginLeft: (Dimensions.get("window").width / 2) - 38,
           backgroundColor: '#275a8a',
           borderRadius: 35,
-          height: 70,
-          width: 70,
+          height: 75,
+          width: 75,
           alignContent: 'center',
           alignItems: 'center',
           justifyContent: 'center'
-        }}><Text style={{fontSize: 40, color: 'white', fontWeight: 'bold'}}>+</Text></TouchableOpacity>
-
-    </SafeAreaView>
+        }}><Image style={{ width: 25, height: 25, marginLeft: 5 }} source={require('../assets/play-button.png')}></Image></TouchableOpacity>
+    </View>
   );
 }
 

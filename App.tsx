@@ -28,6 +28,7 @@ import Home from './screens/Home';
 import Profile from './screens/Profile';
 import Settings from './screens/Settings';
 import CreateAccount from './screens/CreateAccount';
+import DriversInfo from './screens/DriversInfo';
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,7 @@ export default function App() {
         <Stack.Screen name="SplashScreen" options={{ headerShown:false }} component={SplashScreen} />
         <Stack.Screen name="Login" options={{ headerShown:false }} component={Login} />
         <Stack.Screen name="CreateAccount" options={{ headerShown:false }} component={CreateAccount} />
+        <Stack.Screen name="DriversInfo" options={{ headerShown:false }} component={DriversInfo} />
         <Stack.Screen name="Home" options={({ navigation, route }) => ({
           // Add a placeholder button without the `onPress` to avoid flicker
           headerRight: () => (

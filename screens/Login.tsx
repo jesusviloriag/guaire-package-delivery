@@ -75,7 +75,7 @@ function Login({ navigation }): JSX.Element {
             label="Username"
             value={username} 
             placeholder="Username" 
-            onChangeText={text => setPassword(text)}></GTextField>
+            onChangeText={text => setUsername(text)}></GTextField>
 
           <GTextField 
             label="Password"
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   splashLogo: {
     height: 75,
     width: 75,
-    marginTop: 100
+    marginTop: 65
   },
   sectionContainer: {
     marginTop: 32,

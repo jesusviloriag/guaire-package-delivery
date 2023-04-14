@@ -36,7 +36,8 @@ function CreateAccount({ navigation }): JSX.Element {
     GuairePackageDelivery.init();
   }, []);
 
-  const [username, setUsername] = React.useState('');
+  const [login, setLogin] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [customerSelected, setCustomerSelected] = React.useState(true);
 
@@ -44,11 +45,19 @@ function CreateAccount({ navigation }): JSX.Element {
     navigation.pop()
   }
 
-  const login = () => {
-    if(username && password) {
-      GuairePackageDelivery.login(username, password).then((response) => {
+  const register = () => {
+    if(login && email && password) {
+      if(customerSelected == undefined) {
+        setCustomerSelected(false);
+      }
+      GuairePackageDelivery.register(login, password, email, customerSelected).then((response) => {
         if(response) {
-          navigation.navigate("Home")
+          if(!customerSelected) {
+            navigation.navigate("DriversInfo")
+          } else {
+            navigation.navigate("CustomersInfo")
+          }
+          
         } else {
           alert("Login failed please check login information")
         }
@@ -112,9 +121,15 @@ function CreateAccount({ navigation }): JSX.Element {
 
             <GTextField 
               label="Username"
-              value={username} 
+              value={login} 
               placeholder="Username" 
-              onChangeText={text => setPassword(text)}></GTextField>
+              onChangeText={text => setLogin(text)}></GTextField>
+
+            <GTextField 
+              label="Email"
+              value={email} 
+              placeholder="Email" 
+              onChangeText={text => setEmail(text)}></GTextField>
 
             <GTextField 
               label="Password"
@@ -126,7 +141,7 @@ function CreateAccount({ navigation }): JSX.Element {
 
           <View style={{flexDirection: 'row'}}>
             <GButton text="Cancel" onPress={() => clear()}></GButton>
-            <GButton text="Create" onPress={() => login()} style={{marginLeft: 15}}></GButton>
+            <GButton text="Create" onPress={() => register()} style={{marginLeft: 15}}></GButton>
           </View>
         </View>   
 
@@ -166,7 +181,7 @@ const styles = StyleSheet.create({
   splashLogo: {
     height: 75,
     width: 75,
-    marginTop: 100
+    marginTop: 15
   },
   sectionContainer: {
     marginTop: 32,
